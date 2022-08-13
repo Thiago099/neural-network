@@ -86,7 +86,6 @@ export class network {
         }
         return cost / output.length
     }
-
     Learn(inputArray,outputArray)
     {
         const h = 0.0001
@@ -97,17 +96,20 @@ export class network {
             for(const layer of this.layers) {
                 for(var outputId = 0; outputId < layer.length; outputId++) {
                     for(var inputId = 0; inputId < layer.inputLength; inputId++) {
+                        const def = layer.weights[outputId][inputId]
                         layer.weights[outputId][inputId] += h
                         var deltaCost = this.Cost(input,output) - originalCost
-                        layer.weights[outputId][inputId] -= h
                         layer.costGradientWeight[outputId][inputId] = deltaCost / h
+
                     }
+                    const def = layer.biases[outputId]
                     layer.biases[outputId] += h
                     var deltaCost = this.Cost(input,output) - originalCost
-                    layer.biases[outputId] -= h 
+                    layer.biases[outputId] = def
                     layer.costGradientBias[outputId] = deltaCost / h
                 }  
             }
+            console.log(this.layers.map(layer => layer.costGradientWeight))
             for(const layer of this.layers)
             {
                 layer.applyCostGradient(1)

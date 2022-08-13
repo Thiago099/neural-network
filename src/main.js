@@ -44,3 +44,9 @@ function update() {
     update()
   }
   train()
+// stdout
+const stdout = document.getElementById('stdout')
+stdout.innerHTML = JSON.stringify(myNetwork.layers
+  .slice(1)
+  .map
+  (layer => layer.weights), null, 2).replace(/\n/g, '<br>').replace(/ /g, '&nbsp;')
