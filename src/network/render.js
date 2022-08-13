@@ -32,17 +32,29 @@ function renderLayer(layer)
         circle.setAttribute("cy", maxHeight / layer.length * i + padding + "px");
         circle.classList.add("node");
         circle.id = "node-" + nodeIndex++;
+
         circle.addEventListener("mouseover", e=> {
             for(const connection of nodeConnection[circle.id]) {
-            connection.classList.add("connection-active")
+                connection.classList.add("connection-active")
             }
         })
         circle.addEventListener("mouseout", e=> {
             for(const connection of nodeConnection[circle.id]) {
-            connection.classList.remove("connection-active")
+                connection.classList.remove("connection-active")
             }
         } )
         svg.appendChild(circle);
+        // svg text of the id of the node
+        // const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        // text.setAttribute("x", "50px");
+        // text.setAttribute("y", maxHeight / layer.length * i + padding + "px");
+        // text.setAttribute("fill", "white");
+        // text.setAttribute("text-anchor", "middle");
+        // text.setAttribute("alignment-baseline", "middle");
+        // text.classList.add("node-text");
+        // text.innerHTML = circle.id.split("-")[1];
+        // svg.appendChild(text);
+
     }
     container.appendChild(svg);
     return container

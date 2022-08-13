@@ -1,26 +1,19 @@
 import './style.css'
-import { renderNetwork } from './NNRenderer'
+
+import { network } from './network/network'
+import { renderNetwork } from './network/render'
+
 const app = document.querySelector('#app')
 
 
-class layer {
-  constructor(length) {
-    this.length = length
-  }
-}
-class network {
-  constructor(layers) {
-    this.layers = layers
-  }
-}
+var myNetwork = new network(1,2,2,1)
 
-app.appendChild(renderNetwork(
-  new network([
-    new layer(2),
-    new layer(4),
-    new layer(4),
-    new layer(2)
+app.appendChild(renderNetwork(myNetwork))
+
+myNetwork.Learn(
+  [
+    [0], [1],
+    [1], [0],
   ])
-))
 
 

@@ -26,6 +26,7 @@ body{
   stroke: transparent;
   transition: all 0.2s ease-in-out;
 }
+
 .svg-container:hover .node-container{
   stroke:white;
   fill :rgba(0, 0, 0,0.2);
