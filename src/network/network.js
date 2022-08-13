@@ -13,7 +13,7 @@ class layer {
             this.weights[outputId] = []
             for(var inputId = 0; inputId < this.inputLength; inputId++) {
                 this.costGradientWeight[outputId][inputId] = 0
-                this.weights[outputId][inputId] = 1
+                this.weights[outputId][inputId] = 0
             }
         }
         console.log(this.length)

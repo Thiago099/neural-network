@@ -8,7 +8,6 @@ const app = document.querySelector('#app')
 
 var myNetwork = new network(2,2)
 
-app.appendChild(renderNetwork(myNetwork))
 
 var x = [[0,1], [1,0]]
 var y = [[1,0], [0,1]]
@@ -50,3 +49,6 @@ stdout.innerHTML = JSON.stringify(myNetwork.layers
   .slice(1)
   .map
   (layer => layer.weights), null, 2).replace(/\n/g, '<br>').replace(/ /g, '&nbsp;')
+
+
+app.appendChild(renderNetwork(myNetwork))
