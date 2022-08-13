@@ -107,8 +107,12 @@ export class network {
                     layer.biases[outputId] -= h 
                     layer.costGradientBias[outputId] = deltaCost / h
                 }  
+            }
+            for(const layer of this.layers)
+            {
                 layer.applyCostGradient(1)
             }
         }
+        
     }
 }
