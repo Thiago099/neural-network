@@ -1,0 +1,46 @@
+
+body{
+  background-color: #575555;
+  margin:0;
+  overflow: hidden;
+}
+
+.node{
+  fill:#575555;
+  stroke:white;
+  stroke-width:3px;
+  r:15;
+  pointer-events: auto;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+.node:hover{
+  stroke:rgb(0, 255, 255);
+}
+.node-container{
+  fill:transparent ;
+  rx:12;
+  ry:12;
+  stroke-width:2;
+  stroke-dasharray:10,10; 
+  stroke: transparent;
+  transition: all 0.2s ease-in-out;
+}
+.svg-container:hover .node-container{
+  stroke:white;
+  fill :rgba(0, 0, 0,0.2);
+}
+
+.svg-container{
+  display: inline-block;
+}
+
+.connection{
+  stroke:rgb(102, 102, 102);
+  stroke-width:3px;
+  transition: all 0.2s ease-in-out;
+}
+
+.connection-active{
+  stroke:rgb(0, 255, 255);
+}
