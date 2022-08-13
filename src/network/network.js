@@ -7,12 +7,17 @@ class layer {
         this.costGradientWeight = []
         this.costGradientBias = []
         for(var outputId = 0; outputId < this.length; outputId++) {
-            this.biases[outputId] = Math.random()
+            this.biases[outputId] = 0
+            this.costGradientBias[outputId] = 0
+            this.costGradientWeight[outputId] = []
             this.weights[outputId] = []
             for(var inputId = 0; inputId < this.inputLength; inputId++) {
-                this.weights[outputId][inputId] = Math.random()
+                this.costGradientWeight[outputId][inputId] = 0
+                this.weights[outputId][inputId] = 1
             }
-        }   
+        }
+        console.log(this.length)
+        console.log(JSON.stringify(this.weights))
     }
     reLu(input) {
         return input > 0 ? input : 0
@@ -20,38 +25,19 @@ class layer {
     sigmoid(input) {
         return 1 / (1 + Math.exp(-input))
     }
-    cost(output,expected) {
-        var cost = 0
-        for(var outputId = 0; outputId < output.length; outputId++) {
-        cost += Math.pow(output[outputId] - expected[outputId],2)
-        }
-        return cost / output.length
-    }
-    sparseCategoryCrossEntropy(output,expected) {
-        var cost = 0
-        for(var outputId = 0; outputId < output.length; outputId++) {
-            cost += -expected[outputId] * Math.log(output[outputId])
-        }
-        return cost / output.length
-    }
-    CategoryCrossEntropy(output,expected) {
-        var cost = 0
-        for(var outputId = 0; outputId < output.length; outputId++) {
-            cost += -expected[outputId] * Math.log(output[outputId]) - (1 - expected[outputId]) * Math.log(1 - output[outputId])
-        }
-        return cost / output.length
-    }
-
-    calculateOutput(input) {
-            var output = []
-            for(var outputId = 0; outputId < this.length; outputId++) {
+    Predict(input) {
+        var output = []
+        for(var outputId = 0; outputId < this.length; outputId++) {
             output[outputId] = this.biases[outputId]
             for(var inputId = 0; inputId < this.inputLength; inputId++) {
-                output[outputId] += reLu(input[inputId] * this.weights[outputId][inputId])
+                output[outputId] += this.reLu(this.weights[outputId][inputId] * input[inputId] )
             }
+            output[outputId] = output[outputId] / this.inputLength
         }
+        return output
     }   
-
+    
+    
     applyCostGradient(learnRate) {
         for(var outputId = 0; outputId < this.length; outputId++) {
             this.biases[outputId] -= learnRate * this.costGradientBias[outputId]
@@ -59,6 +45,7 @@ class layer {
                 this.weights[outputId][inputId] -= learnRate * this.costGradientWeight[outputId][inputId]
             }
         }
+
     }
 
 }
@@ -66,36 +53,62 @@ export class network {
     constructor(...layerLength) {
         this.layers = []
         for(var layerId = 0; layerId < layerLength.length; layerId++) {
-        this.layers[layerId] = new layer(layerLength[layerId],layerLength[layerId-1] || 0)
+            this.layers[layerId] = new layer(layerLength[layerId],layerLength[layerId-1]||0)
         }
     }
-    calculateOutput(input) {
+
+    CategoryCrossEntropy(output,expected) {
+        var cost = 0
+        for(var outputId = 0; outputId < output.length; outputId++) {
+            cost += -expected[outputId] * Math.log(output[outputId]) - (1 - expected[outputId]) * Math.log(1 - output[outputId])
+        }
+        return cost / output.length
+    }
+    Predict(input) {
         var output = input
-        for(const layer of this.layers) {
-        output = layer.calculateOutput(output)
+        for(var i = 1; i < this.layers.length; i++) {
+            output = this.layers[i].Predict(output)
         }
         return output
     }
-    Cost(input, expected){
-        var output = this.calculateOutput(input)
+    DullCost(output,expected) {
         var cost = 0
         for(var outputId = 0; outputId < output.length; outputId++) {
-            cost += output.sparseCategoryCrossEntropy(output, expected)
+            cost += Math.pow(output[outputId] - expected[outputId],2)
+        }
+        return cost / output.length
+    }
+    Cost(input, expected){
+        var output = this.Predict(input)
+        var cost = 0
+        for(var outputId = 0; outputId < output.length; outputId++) {
+            cost += this.DullCost(output, expected)
         }
         return cost / output.length
     }
 
-    // random learn lmao
-    Learn(input,output)
+    Learn(inputArray,outputArray)
     {
-        for(const layer of this.layers) {
-            for(var outputId = 0; outputId < layer.length; outputId++) {
-                layer.biases[outputId] = Math.random()
-                layer.weights[outputId] = []
-                for(var inputId = 0; inputId < layer.inputLength; inputId++) {
-                    layer.weights[outputId][inputId] = Math.random()
-                }
-            }  
+        const h = 0.0001
+        for(var i = 0; i < inputArray.length; i++) {
+            var input = inputArray[i]
+            var output = outputArray[i]
+            const originalCost = this.Cost(input,output)
+            for(const layer of this.layers) {
+                for(var outputId = 0; outputId < layer.length; outputId++) {
+                    for(var inputId = 0; inputId < layer.inputLength; inputId++) {
+                        layer.weights[outputId][inputId] += h
+                        var deltaCost = this.Cost(input,output) - originalCost
+                        layer.weights[outputId][inputId] -= h
+                        layer.costGradientWeight[outputId][inputId] = deltaCost / h
+                    }
+                    layer.biases[outputId] += h
+                    var deltaCost = this.Cost(input,output) - originalCost
+                    layer.biases[outputId] -= h 
+                    layer.costGradientBias[outputId] = deltaCost / h
+                }  
+                layer.applyCostGradient(1)
+            }
         }
     }
 }

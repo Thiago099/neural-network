@@ -4,7 +4,10 @@ body{
   margin:0;
   overflow: hidden;
 }
-
+svg{
+  z-index: -1;
+  position: absolute;
+}
 .node{
   fill:#575555;
   stroke:white;
@@ -44,4 +47,30 @@ body{
 
 .connection-active{
   stroke:rgb(0, 255, 255);
+}
+
+
+input{
+  width: 100%;
+  height: 100%;
+  border: none;
+  background-color: transparent;
+  color: white;
+  font-size: 1.5em;
+  font-weight: bold;
+  text-align: center;
+  outline: none;
+  cursor: pointer;
+}
+button{
+  width: 100%;
+  height: 100%;
+  border: none;
+  background-color: transparent;
+  color: white;
+  font-size: 1.5em;
+  font-weight: bold;
+  text-align: center;
+  outline: none;
+  cursor: pointer;
 }
