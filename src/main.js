@@ -23,7 +23,6 @@ input.addEventListener('keydown', () => {
   }
 })
 input.value = localStorage.getItem('input')
-update()
 
 trainElement.addEventListener('click', () => {
   train()
@@ -35,19 +34,20 @@ function update() {
   output.value = myNetwork.Predict(eval(`[${input.value}]`)).map(x => Math.round(x))
 }
 
+const stdout = document.getElementById('stdout')
 function train(){
-  for(var i = 0; i < 100000; i++) {
+  for(var i = 0; i < 1000; i++) {
   myNetwork.Learn(x,y)
   }
+  stdout.innerHTML = JSON.stringify(myNetwork.layers
+    .slice(1)
+    .map
+    (layer => [layer.weights,layer.biases]), null, 2).replace(/\n/g, '<br>').replace(/ /g, '&nbsp;')
+  
   update()
 }
 train()
 // stdout
-const stdout = document.getElementById('stdout')
-stdout.innerHTML = JSON.stringify(myNetwork.layers
-  .slice(1)
-  .map
-  (layer => [layer.weights,layer.biases]), null, 2).replace(/\n/g, '<br>').replace(/ /g, '&nbsp;')
 
 
 app.appendChild(renderNetwork(myNetwork))
