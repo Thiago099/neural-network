@@ -45,7 +45,6 @@ class layer {
                 this.weights[outputId][inputId] -= learnRate * this.costGradientWeight[outputId][inputId]
             }
         }
-
     }
 
 }
@@ -99,6 +98,7 @@ export class network {
                         const def = layer.weights[outputId][inputId]
                         layer.weights[outputId][inputId] += h
                         var deltaCost = this.Cost(input,output) - originalCost
+                        layer.weights[outputId][inputId] = def
                         layer.costGradientWeight[outputId][inputId] = deltaCost / h
 
                     }
