@@ -42,7 +42,7 @@ function train(){
   stdout.innerHTML = JSON.stringify(myNetwork.layers
     .slice(1)
     .map
-    (layer => [layer.weights,layer.biases]), null, 2).replace(/\n/g, '<br>').replace(/ /g, '&nbsp;')
+    (layer => layer.weights), null, 2).replace(/\n/g, '<br>').replace(/ /g, '&nbsp;')
   
   update()
 }

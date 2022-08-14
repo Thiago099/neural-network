@@ -3,11 +3,9 @@ class layer {
         this.length = length
         this.inputLength = inputLength
         this.weights = []
-        this.biases = []
         this.costGradientWeight = []
         this.costGradientBias = []
         for(var outputId = 0; outputId < this.length; outputId++) {
-            this.biases[outputId] = 0
             this.costGradientBias[outputId] = 0
             this.costGradientWeight[outputId] = []
             this.weights[outputId] = []
@@ -25,7 +23,6 @@ class layer {
         this.activations = []
         this.inputs = []
         for(var outputId = 0; outputId < this.length; outputId++) {
-            this.costGradientBias[outputId] = 0
             for(var inputId = 0; inputId < this.inputLength; inputId++) {
                 this.costGradientWeight[outputId][inputId] = 0
             }
@@ -38,7 +35,7 @@ class layer {
         var output = []
         this.inputs = input
         for(var outputId = 0; outputId < this.length; outputId++) {
-            output[outputId] = this.biases[outputId]
+            output[outputId] = 0
             for(var inputId = 0; inputId < this.inputLength; inputId++) {
                 output[outputId] += this.weights[outputId][inputId] * input[inputId]
             }
@@ -50,7 +47,6 @@ class layer {
     }   
     applyCostGradient(learnRate) {
         for(var outputId = 0; outputId < this.length; outputId++) {
-            this.biases[outputId] -= learnRate * this.costGradientBias[outputId]
             for(var inputId = 0; inputId < this.inputLength; inputId++) {
                 this.weights[outputId][inputId] -= learnRate * this.costGradientWeight[outputId][inputId]
             }
@@ -95,11 +91,8 @@ export class network {
         this.Predict(input)
         var outputLayer = this.layers[this.layers.length-1]
         var nodeValues = outputLayer.CalculateNodeValues(output)
-
         outputLayer.updateGradients(nodeValues)
-
     }
-    
 
     Predict(input) {
         var output = input
