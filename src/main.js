@@ -49,5 +49,4 @@ function train(){
 train()
 // stdout
 
-
 app.appendChild(renderNetwork(myNetwork))
