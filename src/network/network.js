@@ -44,16 +44,9 @@ class layer {
             this.weightedInputs[outputId] = output[outputId]    
             this.activations[outputId] = this.reLu(output[outputId])
             output[outputId] = this.activations[outputId]
-            // output[outputId] = output[outputId] / this.inputLength
         }
         return output
     }   
-    // nodeCostDerivative(activation, expected)
-    // {
-    //     return activation * (1 - activation) * (expected - activation)
-    // }
-    
-    
     applyCostGradient(learnRate) {
         for(var outputId = 0; outputId < this.length; outputId++) {
             this.biases[outputId] -= learnRate * this.costGradientBias[outputId]
@@ -104,16 +97,7 @@ export class network {
 
         outputLayer.updateGradients(nodeValues)
 
-        // for(var i = this.layers.length-2; i >= 0; i--) {
-        //     var hiddenLayer = this.layers[i]
-        //     nodeValues = hiddenLayer.calculateHiddenGradient(this.layers[i + 1],nodeValues)
-        //     hiddenLayer.updateGradients(nodeValues)
-        // }
     }
-    // nodeCostDerivative(activation, expected)
-    // {
-    //     return activation * (1 - activation) * (expected - activation)
-    // }
     
 
     Predict(input) {
@@ -152,32 +136,3 @@ export class network {
         }
     }
 }
-        // const h = 0.0001
-        // for(var i = 0; i < inputArray.length; i++) {
-        //     var input = inputArray[i]
-        //     var output = outputArray[i]
-        //     const originalCost = this.Cost(input,output)
-        //     for(const layer of this.layers) {
-        //         layer.clearGradient()
-        //         for(var outputId = 0; outputId < layer.length; outputId++) {
-        //             for(var inputId = 0; inputId < layer.inputLength; inputId++) {
-        //                 const def = layer.weights[outputId][inputId]
-        //                 layer.weights[outputId][inputId] += h
-        //                 var deltaCost = this.Cost(input,output) - originalCost
-        //                 layer.weights[outputId][inputId] = def
-        //                 layer.costGradientWeight[outputId][inputId] += deltaCost / h
-
-        //             }
-        //             const def = layer.biases[outputId]
-        //             layer.biases[outputId] += h
-        //             var deltaCost = this.Cost(input,output) - originalCost
-        //             layer.biases[outputId] = def
-        //             layer.costGradientBias[outputId] += deltaCost / h
-        //         }  
-        //     }
-        //     for(const layer of this.layers)
-        //     {
-        //         layer.applyCostGradient(h)
-        //     }
-        // }
-        
