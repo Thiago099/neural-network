@@ -23,6 +23,7 @@ class layer {
     clearGradient() {
         this.weightedInputs = []
         this.activations = []
+        this.inputs = []
         for(var outputId = 0; outputId < this.length; outputId++) {
             this.costGradientBias[outputId] = 0
             for(var inputId = 0; inputId < this.inputLength; inputId++) {
