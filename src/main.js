@@ -9,11 +9,10 @@ const app = document.querySelector('#app')
 var myNetwork = new network(2,2)
 
 
-var x = [[0,1], [1,0]]
-var y = [[1,0], [0,1]]
+var x = [[2,1], [1,2]]
+var y = [[1,2], [2,1]]
 
 
-var form = document.getElementById('form')
 var input = document.getElementById('input')
 var output = document.getElementById('output')
 var trainElement = document.getElementById('train')
@@ -33,22 +32,22 @@ trainElement.addEventListener('click', () => {
 
 function update() {
   if(input.value == '') return
-  output.value = myNetwork.Predict(eval(`[${input.value}]`))
+  output.value = myNetwork.Predict(eval(`[${input.value}]`)).map(x => Math.round(x))
 }
 
-  function train(){
-    for(var i = 0; i < 1000; i++) {
-    myNetwork.Learn(x,y)
-    }
-    update()
+function train(){
+  for(var i = 0; i < 100000; i++) {
+  myNetwork.Learn(x,y)
   }
-  train()
+  update()
+}
+train()
 // stdout
 const stdout = document.getElementById('stdout')
 stdout.innerHTML = JSON.stringify(myNetwork.layers
   .slice(1)
   .map
-  (layer => layer.weights), null, 2).replace(/\n/g, '<br>').replace(/ /g, '&nbsp;')
+  (layer => [layer.weights,layer.biases]), null, 2).replace(/\n/g, '<br>').replace(/ /g, '&nbsp;')
 
 
 app.appendChild(renderNetwork(myNetwork))

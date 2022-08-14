@@ -16,14 +16,28 @@ class layer {
                 this.weights[outputId][inputId] = 0
             }
         }
-        console.log(this.length)
-        console.log(JSON.stringify(this.weights))
+        this.weightedInputs = []
+    }
+    clearGradient() {
+        this.weightedInputs = []
+        for(var outputId = 0; outputId < this.length; outputId++) {
+            this.costGradientBias[outputId] = 0
+            for(var inputId = 0; inputId < this.inputLength; inputId++) {
+                this.costGradientWeight[outputId][inputId] = 0
+            }
+        }
     }
     reLu(input) {
         return input > 0 ? input : 0
     }
+    reLuDerivative(input) {
+        return input > 0 ? 1 : 0
+    }
     sigmoid(input) {
         return 1 / (1 + Math.exp(-input))
+    }
+    sigmoidDerivative(input) {
+        return input * (1 - input)
     }
     Predict(input) {
         var output = []
@@ -32,10 +46,14 @@ class layer {
             for(var inputId = 0; inputId < this.inputLength; inputId++) {
                 output[outputId] += this.reLu(this.weights[outputId][inputId] * input[inputId] )
             }
-            output[outputId] = output[outputId] / this.inputLength
+            // output[outputId] = output[outputId] / this.inputLength
         }
         return output
     }   
+    // nodeCostDerivative(activation, expected)
+    // {
+    //     return activation * (1 - activation) * (expected - activation)
+    // }
     
     
     applyCostGradient(learnRate) {
@@ -46,6 +64,15 @@ class layer {
             }
         }
     }
+
+    updateAllGradients(input,output) {
+    
+    }
+    DerivativeCost(output,expected) 
+    {
+        return 2 * (output - expected)   
+    }
+
 
 }
 export class network {
@@ -85,6 +112,7 @@ export class network {
         }
         return cost / output.length
     }
+   
     Learn(inputArray,outputArray)
     {
         const h = 0.0001
@@ -93,26 +121,26 @@ export class network {
             var output = outputArray[i]
             const originalCost = this.Cost(input,output)
             for(const layer of this.layers) {
+                layer.clearGradient()
                 for(var outputId = 0; outputId < layer.length; outputId++) {
                     for(var inputId = 0; inputId < layer.inputLength; inputId++) {
                         const def = layer.weights[outputId][inputId]
                         layer.weights[outputId][inputId] += h
                         var deltaCost = this.Cost(input,output) - originalCost
                         layer.weights[outputId][inputId] = def
-                        layer.costGradientWeight[outputId][inputId] = deltaCost / h
+                        layer.costGradientWeight[outputId][inputId] += deltaCost / h
 
                     }
                     const def = layer.biases[outputId]
                     layer.biases[outputId] += h
                     var deltaCost = this.Cost(input,output) - originalCost
                     layer.biases[outputId] = def
-                    layer.costGradientBias[outputId] = deltaCost / h
+                    layer.costGradientBias[outputId] += deltaCost / h
                 }  
             }
-            console.log(this.layers.map(layer => layer.costGradientWeight))
             for(const layer of this.layers)
             {
-                layer.applyCostGradient(1)
+                layer.applyCostGradient(h)
             }
         }
         
