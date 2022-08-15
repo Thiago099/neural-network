@@ -6,11 +6,11 @@ import { renderNetwork } from './network/render'
 const app = document.querySelector('#app')
 
 
-var myNetwork = new network(2,3)
+var myNetwork = new network(2,2)
 
 
 var x = [[2,1], [1,2]]
-var y = [[1,2,1], [2,1,2]]
+var y = [[1,2], [2,1]]
 
 
 var input = document.getElementById('input')
@@ -38,7 +38,6 @@ const stdout = document.getElementById('stdout')
 function train(){
   
   myNetwork.Learn(x,y,1000)
-  console.log(myNetwork.layers[1].weights)
 
   stdout.innerHTML = JSON.stringify(myNetwork.layers
     .slice(1)

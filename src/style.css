@@ -15,11 +15,11 @@ svg{
   r:15;
   pointer-events: auto;
   transition: all 0.2s ease-in-out;
-  cursor: pointer;
+  /* cursor: pointer; */
 }
-.node:hover{
+/* .node:hover{
   stroke:rgb(0, 255, 255);
-}
+} */
 .node-container{
   fill:transparent ;
   rx:12;
@@ -30,10 +30,10 @@ svg{
   transition: all 0.2s ease-in-out;
 }
 
-.svg-container:hover .node-container{
+/* .svg-container:hover .node-container{
   stroke:white;
   fill :rgba(0, 0, 0,0.2);
-}
+} */
 
 .svg-container{
   display: inline-block;
@@ -44,10 +44,10 @@ svg{
   stroke-width:3px;
   transition: all 0.2s ease-in-out;
 }
-
+/* 
 .connection-active{
   stroke:rgb(0, 255, 255);
-}
+} */
 
 
 input{
