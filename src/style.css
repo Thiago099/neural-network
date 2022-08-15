@@ -61,7 +61,6 @@ input{
   font-weight: bold;
   text-align: center;
   outline: none;
-  cursor: pointer;
   pointer-events: auto;
 }
 button{

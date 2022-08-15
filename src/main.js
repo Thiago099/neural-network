@@ -15,7 +15,11 @@ var y = [[1,2], [2,1]]
 
 var input = document.getElementById('input')
 var output = document.getElementById('output')
-var trainElement = document.getElementById('train')
+// var trainElement = document.getElementById('train')
+// trainElement.addEventListener('click', () => {
+//   train()
+// })
+
 input.addEventListener('keydown', (event) => {
   if(event.keyCode == 13) {
     localStorage.setItem('input', input.value)
@@ -24,9 +28,6 @@ input.addEventListener('keydown', (event) => {
 })
 input.value = localStorage.getItem('input')
 
-trainElement.addEventListener('click', () => {
-  train()
-})
 
 
 function update() {
