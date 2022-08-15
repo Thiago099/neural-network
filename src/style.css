@@ -51,18 +51,21 @@ svg{
 
 
 input{
-  width: 100%;
+  width: 300px;
   height: 100%;
-  border: none;
   background-color: transparent;
+  border-radius: 10px;
+  margin-bottom: 10px;
   color: white;
   font-size: 1.5em;
   font-weight: bold;
   text-align: center;
   outline: none;
   cursor: pointer;
+  pointer-events: auto;
 }
 button{
+  pointer-events: auto;
   margin-top: 10px;
   border: none;
   background-color: transparent;
@@ -86,6 +89,9 @@ button:hover{
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  position: absolute;
+  pointer-events: none;
 }
 #stdout{
   color: white;
