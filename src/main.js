@@ -6,17 +6,17 @@ import { renderNetwork } from './network/render'
 const app = document.querySelector('#app')
 
 
-var myNetwork = new network(2,2)
+var myNetwork = new network(2,3)
 
 
 var x = [[2,1], [1,2]]
-var y = [[1,2], [2,1]]
+var y = [[1,2,1], [2,1,2]]
 
 
 var input = document.getElementById('input')
 var output = document.getElementById('output')
 var trainElement = document.getElementById('train')
-input.addEventListener('keydown', () => {
+input.addEventListener('keydown', (event) => {
   if(event.keyCode == 13) {
     localStorage.setItem('input', input.value)
     update()
@@ -36,13 +36,15 @@ function update() {
 
 const stdout = document.getElementById('stdout')
 function train(){
-  for(var i = 0; i < 1000; i++) {
-  myNetwork.Learn(x,y)
-  }
+  
+  myNetwork.Learn(x,y,1000)
+  console.log(myNetwork.layers[1].weights)
+
   stdout.innerHTML = JSON.stringify(myNetwork.layers
     .slice(1)
-    .map
-    (layer => layer.weights), null, 2).replace(/\n/g, '<br>').replace(/ /g, '&nbsp;')
+    .map(layer => layer.weights), null, 2)
+    .replace(/\n/g, '<br>')
+    .replace(/ /g, '&nbsp;')
   
   update()
 }

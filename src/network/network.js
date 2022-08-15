@@ -117,16 +117,18 @@ export class network {
         }
         return cost / output.length
     }
-    Learn(inputArray,outputArray)
+    Learn(inputArray,outputArray,epochs)
     {
-        for(var i = 0; i < inputArray.length; i++) {
-            this.updateAllGradients(inputArray[i],outputArray[i])
-        }
-        for(var i = 1; i < this.layers.length; i++) {
-            this.layers[i].applyCostGradient(0.1)
-        }
-        for(const layer of this.layers) {
-            layer.clearGradient()
+        for(var j = 0; j < epochs; j++) {
+            for(var i = 0; i < inputArray.length; i++) {
+                this.updateAllGradients(inputArray[i],outputArray[i])
+            }
+            for(var i = 1; i < this.layers.length; i++) {
+                this.layers[i].applyCostGradient(0.1)
+            }
+            for(const layer of this.layers) {
+                layer.clearGradient()
+            }
         }
     }
 }
