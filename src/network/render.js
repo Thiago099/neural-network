@@ -73,21 +73,21 @@ export function renderNetwork(network)
     const maxWidth = fullWidth - padding;
     var previousLayer = null
     var previousX = null
+    console.log(network.layers)
     for(var i = 0; i < network.layers.length; i++) {
         const layer = network.layers[i];
         const layerContainer = renderLayer(layer);
+        console.log(layerContainer)
         layerContainer.style.position = "absolute";
         var left = padding -35  + maxWidth / network.layers.length * i
         layerContainer.style.left = left + "px";
         const currentLayer = layerContainer.querySelectorAll(".node");
         const currentX =left +50+"px";
-        console.log(layer.weights)
         var maxWeight = Math.max(...layer.weights.map(x => Math.max(...x)))
-
         if(previousLayer != null) {
-            var i = 0
+            var j = 0
             for(const previousNode of previousLayer) {
-                var j = 0
+                var k = 0
                 for(const currentNode of currentLayer) {
                     const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
                     if(nodeConnection[previousNode.id] == null) nodeConnection[previousNode.id] = []
@@ -99,16 +99,16 @@ export function renderNetwork(network)
                     line.setAttribute("y1", previousNode.getAttribute("cy"));
                     line.setAttribute("x2", currentX);
                     line.setAttribute("y2", currentNode.getAttribute("cy"));
-                    var currentWeight = layer.weights[j][i]/maxWeight*255;
+                    var currentWeight = layer.weights[k][j]/maxWeight*255;
 
                     // make current weight between 100 and 200
                     currentWeight = (currentWeight/4)+100;
                     line.setAttribute("stroke", `rgb(${currentWeight},${currentWeight},${currentWeight})`);
                     line.classList.add("connection");
                     lines.appendChild(line);
-                    j++
+                    k++
                 }
-                i++
+                j++
             }
         }
         previousLayer = currentLayer

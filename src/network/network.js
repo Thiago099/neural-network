@@ -101,22 +101,6 @@ export class network {
         }
         return output
     }
-    DullCost(output,expected) {
-        var cost = 0
-        for(var outputId = 0; outputId < output.length; outputId++) {
-            cost += Math.pow(output[outputId] - expected[outputId],2)
-        }
-        return cost / output.length
-    }
-
-    Cost(input, expected){
-        var output = this.Predict(input)
-        var cost = 0
-        for(var outputId = 0; outputId < output.length; outputId++) {
-            cost += this.DullCost(output, expected)
-        }
-        return cost / output.length
-    }
     Learn(inputArray,outputArray,epochs)
     {
         for(var j = 0; j < epochs; j++) {
