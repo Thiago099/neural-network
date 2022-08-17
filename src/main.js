@@ -6,19 +6,13 @@ import { renderNetwork } from './network/render'
 const app = document.querySelector('#app')
 
 
-var myNetwork = new network(2,2)
-
-
-var x = [[2,1], [1,2]]
-var y = [[1,2], [2,1]]
+const networkShapeElement = document.getElementById('network-shape')
+const xElement = document.getElementById('x')
+const yElement = document.getElementById('y') 
 
 
 var input = document.getElementById('input')
 var output = document.getElementById('output')
-// var trainElement = document.getElementById('train')
-// trainElement.addEventListener('click', () => {
-//   train()
-// })
 
 input.addEventListener('keydown', (event) => {
   if(event.keyCode == 13) {
@@ -26,9 +20,45 @@ input.addEventListener('keydown', (event) => {
     update()
   }
 })
-input.value = localStorage.getItem('input')
+input.value = localStorage.getItem('input') || '1,2'
+
+networkShapeElement.addEventListener('keydown', () => {
+  if(event.keyCode == 13) {
+  localStorage.setItem('networkShape', networkShapeElement.value)
+  myNetwork = new network(...eval(`[${networkShapeElement.value}]`))
+  }
+})
+networkShapeElement.value = localStorage.getItem('networkShape') || '2,2'
+
+xElement.addEventListener('keydown', () => {
+  if(event.keyCode == 13) {
+  localStorage.setItem('x', xElement.value)
+  x = eval(`[${xElement.value}]`)
+  myNetwork = new network(...eval(`[${networkShapeElement.value}]`))
+  train()
+  }
+})
+
+xElement.value = localStorage.getItem('x') || '[1,2], [2,1]'
+
+yElement.addEventListener('keydown', () => {
+  if(event.keyCode == 13) {
+  localStorage.setItem('y', yElement.value)
+  y = eval(`[${yElement.value}]`)
+  myNetwork = new network(...eval(`[${networkShapeElement.value}]`))
+  train()
+  }
+})
+
+yElement.value = localStorage.getItem('y') || '[2,1], [1,2]'
 
 
+
+var myNetwork = new network(...eval(`[${networkShapeElement.value}]`))
+
+
+var x = eval(`[${xElement.value}]`)
+var y = eval(`[${yElement.value}]`)
 
 function update() {
   if(input.value == '') return
@@ -47,8 +77,10 @@ function train(){
     .replace(/ /g, '&nbsp;')
   
   update()
+  
+app.innerHTML = "";
+app.appendChild(renderNetwork(myNetwork)) 
+
 }
 train()
 // stdout
-
-app.appendChild(renderNetwork(myNetwork))
