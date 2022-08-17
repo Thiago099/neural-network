@@ -14,49 +14,41 @@ const yElement = document.getElementById('y')
 var input = document.getElementById('input')
 var output = document.getElementById('output')
 
-input.addEventListener('keydown', (event) => {
-  if(event.keyCode == 13) {
-    localStorage.setItem('input', input.value)
-    update()
-  }
-})
-input.value = localStorage.getItem('input') || '1,2'
+function model(element, defaultValue, callback)
+{
+  const result = document.querySelector(element)
+  result.value = localStorage.getItem(element) || defaultValue
+  result.addEventListener('keydown', (e) => {
+    if (e.keyCode === 13) {
+      callback(result.value)
+      localStorage.setItem(element, result.value)
+    }
+  })
+  return result;
+}
 
-networkShapeElement.addEventListener('keydown', () => {
-  if(event.keyCode == 13) {
-  localStorage.setItem('networkShape', networkShapeElement.value)
-  myNetwork = new network(...eval(`[${networkShapeElement.value}]`))
-  }
-})
-networkShapeElement.value = localStorage.getItem('networkShape') || '2,2'
 
-xElement.addEventListener('keydown', () => {
-  if(event.keyCode == 13) {
-  localStorage.setItem('x', xElement.value)
-  x = eval(`[${xElement.value}]`)
-  myNetwork = new network(...eval(`[${networkShapeElement.value}]`))
-  train()
-  }
+model('#input', '1,2', input => {
+  update()
 })
 
-xElement.value = localStorage.getItem('x') || '[1,2], [2,1]'
+model('#network-shape', '2,2', networkShape => {
+  myNetwork = new network(...eval(`[${networkShape}]`))
+})
 
-yElement.addEventListener('keydown', () => {
-  if(event.keyCode == 13) {
-  localStorage.setItem('y', yElement.value)
-  y = eval(`[${yElement.value}]`)
+model('#x', '[1,2], [2,1]', xv => {
+  x = eval(`[${xv}]`)
   myNetwork = new network(...eval(`[${networkShapeElement.value}]`))
   train()
-  }
 })
 
-yElement.value = localStorage.getItem('y') || '[2,1], [1,2]'
-
-
+model('#y', '[2,1], [1,2]', yv => {
+  y = eval(`[${yv}]`)
+  myNetwork = new network(...eval(`[${networkShapeElement.value}]`))
+  train()
+})
 
 var myNetwork = new network(...eval(`[${networkShapeElement.value}]`))
-
-
 var x = eval(`[${xElement.value}]`)
 var y = eval(`[${yElement.value}]`)
 
@@ -78,8 +70,8 @@ function train(){
   
   update()
   
-app.innerHTML = "";
-app.appendChild(renderNetwork(myNetwork)) 
+  app.innerHTML = "";
+  app.appendChild(renderNetwork(myNetwork)) 
 
 }
 train()
