@@ -34,6 +34,7 @@ model('#input', '1,2', input => {
 
 model('#network-shape', '2,2', networkShape => {
   myNetwork = new network(...eval(`[${networkShape}]`))
+  train()
 })
 
 model('#x', '[1,2], [2,1]', xv => {
