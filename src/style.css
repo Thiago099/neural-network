@@ -50,10 +50,6 @@ svg{
   stroke:rgb(0, 255, 255);
 } */
 
-label{
-  color: white;
-  margin-top: 10  px;
-}
 input{
   background-color: #363636;
   width: 300px;
