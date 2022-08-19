@@ -11,12 +11,28 @@ class layer {
             this.weights[outputId] = []
             for(var inputId = 0; inputId < this.inputLength; inputId++) {
                 this.costGradientWeight[outputId][inputId] = 0
-                this.weights[outputId][inputId] = 1
+                this.weights[outputId][inputId] = inputId % this.length  == outputId % this.inputLength  ? 1 : 0
             }
         }
         this.weightedInputs = []
         this.activations = []
         this.inputs = []
+    }
+    addNode(nextLayer)
+    {
+        this.length++
+        this.weights.push([])
+        this.costGradientWeight.push([])
+        for(var i = 0; i<this.inputLength; i++) {
+            this.weights[this.weights.length-1][i] = 0
+            this.costGradientWeight[this.costGradientWeight.length-1][i] = 0    
+        }
+        nextLayer.inputLength++
+        for(var i = 0; i<nextLayer.length; i++) {
+            nextLayer.weights[i].push(0)
+            nextLayer.costGradientWeight[i].push(0)
+        }
+
     }
     clearGradient() {
         this.weightedInputs = []
@@ -78,7 +94,6 @@ class layer {
         }
     }
 
-
 }
 export class network {
     constructor(...layerLength) {
@@ -86,12 +101,17 @@ export class network {
         for(var layerId = 0; layerId < layerLength.length; layerId++) {
             this.layers[layerId] = new layer(layerLength[layerId],layerLength[layerId-1]||0)
         }
+        this.learnRate = 0.1
     }
     updateAllGradients(input,output) {
-        this.Predict(input)
-        var outputLayer = this.layers[this.layers.length-1]
-        var nodeValues = outputLayer.CalculateNodeValues(output)
-        outputLayer.updateGradients(nodeValues)
+        // this.Predict(input)
+        // var outputLayer = this.layers[this.layers.length-1]
+        // var nodeValues = outputLayer.CalculateNodeValues(output)
+        // outputLayer.updateGradients(nodeValues)
+
+        // var hiddenLayer = this.layers[this.layers.length-2]
+        // nodeValues = hiddenLayer.CalculateHiddenNodeValues(outputLayer,nodeValues)
+        // hiddenLayer.updateGradients(nodeValues)
     }
 
     Predict(input) {
@@ -113,6 +133,8 @@ export class network {
             for(const layer of this.layers) {
                 layer.clearGradient()
             }
+            if(j % 100 == 0) 
+            this.layers[1].addNode(this.layers[2])
         }
     }
 }
