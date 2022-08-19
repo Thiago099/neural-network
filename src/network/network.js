@@ -14,30 +14,8 @@ class layer {
                 this.weights[outputId][inputId] = inputId % this.length  == outputId % this.inputLength  ? 1 : 0
             }
         }
-        this.weightedInputs = []
-        this.activations = []
-        this.inputs = []
-    }
-    addNode(nextLayer)
-    {
-        this.length++
-        this.weights.push([])
-        this.costGradientWeight.push([])
-        for(var i = 0; i<this.inputLength; i++) {
-            this.weights[this.weights.length-1][i] = 0
-            this.costGradientWeight[this.costGradientWeight.length-1][i] = 0    
-        }
-        nextLayer.inputLength++
-        for(var i = 0; i<nextLayer.length; i++) {
-            nextLayer.weights[i].push(0)
-            nextLayer.costGradientWeight[i].push(0)
-        }
-
     }
     clearGradient() {
-        this.weightedInputs = []
-        this.activations = []
-        this.inputs = []
         for(var outputId = 0; outputId < this.length; outputId++) {
             for(var inputId = 0; inputId < this.inputLength; inputId++) {
                 this.costGradientWeight[outputId][inputId] = 0
@@ -49,17 +27,34 @@ class layer {
     }
     Predict(input) {
         var output = []
-        this.inputs = input
         for(var outputId = 0; outputId < this.length; outputId++) {
             output[outputId] = 0
             for(var inputId = 0; inputId < this.inputLength; inputId++) {
                 output[outputId] += this.weights[outputId][inputId] * input[inputId]
             }
-            this.weightedInputs[outputId] = output[outputId]    
-            this.activations[outputId] = this.reLu(output[outputId])
-            output[outputId] = this.activations[outputId]
+            output[outputId] = this.reLu(output[outputId])
         }
         return output
+    }   
+    CollectData(input) {
+        var output = []
+        input = input
+        for(var outputId = 0; outputId < this.length; outputId++) {
+            var cur = 0
+            for(var inputId = 0; inputId < this.inputLength; inputId++) {
+                cur += this.weights[outputId][inputId] * input[inputId]
+            }
+            const nonActivationOutput = cur    
+            const activations = this.reLu(cur)
+            output[outputId] = {
+                activations:activations,
+                nonActivations:nonActivationOutput
+            }
+        }
+        return {
+            output,
+            input,
+        }
     }   
     applyCostGradient(learnRate) {
         for(var outputId = 0; outputId < this.length; outputId++) {
@@ -75,21 +70,21 @@ class layer {
     activationDerivative(input) {
         return input > 0 ? 1 : 0
     }
-    CalculateNodeValues(expectedOutput)
+    CalculateNodeValues(prediction,expectedOutput)
     {
         var nodeValues = []
         for(var outputId = 0; outputId < this.length; outputId++) {
-            const costDerivative = this.nodeCostDerivative(this.activations[outputId], expectedOutput[outputId])
-            const activationDerivative = this.activationDerivative(this.weightedInputs[outputId])
+            const costDerivative = this.nodeCostDerivative(prediction.output[outputId].activations, expectedOutput[outputId])
+            const activationDerivative = this.activationDerivative(prediction.output[outputId].nonActivations)
             nodeValues[outputId] = costDerivative * activationDerivative
         }
         return nodeValues
     }
-    updateGradients(nodeValues)
+    updateGradients(prediction,nodeValues)
     {
         for(var outputId = 0; outputId < this.length; outputId++) {
-            for(var inputId = 0; inputId < this.inputLength; inputId++) {
-                this.costGradientWeight[outputId][inputId] += nodeValues[outputId] * this.inputs[inputId]
+                for(var inputId = 0; inputId < this.inputLength; inputId++) {
+                this.costGradientWeight[outputId][inputId] += nodeValues[outputId] * prediction.input[inputId]
             }
         }
     }
@@ -104,10 +99,10 @@ export class network {
         this.learnRate = 0.1
     }
     updateAllGradients(input,output) {
-        // this.Predict(input)
-        // var outputLayer = this.layers[this.layers.length-1]
-        // var nodeValues = outputLayer.CalculateNodeValues(output)
-        // outputLayer.updateGradients(nodeValues)
+        var outputLayer = this.layers[this.layers.length-1]
+        const prediction = outputLayer.CollectData(input)
+        var nodeValues = outputLayer.CalculateNodeValues(prediction,output)
+        outputLayer.updateGradients(prediction,nodeValues)
 
         // var hiddenLayer = this.layers[this.layers.length-2]
         // nodeValues = hiddenLayer.CalculateHiddenNodeValues(outputLayer,nodeValues)
@@ -133,8 +128,6 @@ export class network {
             for(const layer of this.layers) {
                 layer.clearGradient()
             }
-            if(j % 100 == 0) 
-            this.layers[1].addNode(this.layers[2])
         }
     }
 }

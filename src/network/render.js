@@ -73,11 +73,9 @@ export function renderNetwork(network)
     const maxWidth = fullWidth - padding;
     var previousLayer = null
     var previousX = null
-    console.log(network.layers)
     for(var i = 0; i < network.layers.length; i++) {
         const layer = network.layers[i];
         const layerContainer = renderLayer(layer);
-        console.log(layerContainer)
         layerContainer.style.position = "absolute";
         var left = padding -35  + maxWidth / network.layers.length * i
         layerContainer.style.left = left + "px";
