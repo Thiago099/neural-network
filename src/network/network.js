@@ -70,6 +70,7 @@ class layer {
     activationDerivative(input) {
         return input > 0 ? 1 : 0
     }
+
     CalculateNodeValues(prediction,expectedOutput)
     {
         var nodeValues = []
@@ -83,8 +84,10 @@ class layer {
     updateGradients(prediction,nodeValues)
     {
         for(var outputId = 0; outputId < this.length; outputId++) {
-                for(var inputId = 0; inputId < this.inputLength; inputId++) {
-                this.costGradientWeight[outputId][inputId] += nodeValues[outputId] * prediction.input[inputId]
+            for(var inputId = 0; inputId < this.inputLength; inputId++) {
+                for(var sampleId = 0; sampleId < nodeValues.length; sampleId++) {
+                    this.costGradientWeight[outputId][inputId] += nodeValues[sampleId][outputId] * prediction[sampleId].input[inputId]
+                }
             }
         }
     }
@@ -100,8 +103,14 @@ export class network {
     }
     updateAllGradients(input,output) {
         var outputLayer = this.layers[this.layers.length-1]
-        const prediction = outputLayer.CollectData(input)
-        var nodeValues = outputLayer.CalculateNodeValues(prediction,output)
+        const nodeValues = []
+        const prediction = []
+        for(var sampleId = 0; sampleId < input.length; sampleId++)
+        {
+            const currentPrediction = outputLayer.CollectData(input[sampleId])
+            nodeValues.push(outputLayer.CalculateNodeValues(currentPrediction, output[sampleId]))
+            prediction.push(currentPrediction)
+        }
         outputLayer.updateGradients(prediction,nodeValues)
 
         // var hiddenLayer = this.layers[this.layers.length-2]
@@ -119,9 +128,7 @@ export class network {
     Learn(inputArray,outputArray,epochs)
     {
         for(var j = 0; j < epochs; j++) {
-            for(var i = 0; i < inputArray.length; i++) {
-                this.updateAllGradients(inputArray[i],outputArray[i])
-            }
+            this.updateAllGradients(inputArray,outputArray)
             for(var i = 1; i < this.layers.length; i++) {
                 this.layers[i].applyCostGradient(0.1)
             }
