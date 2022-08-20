@@ -5,6 +5,7 @@ class layer {
         this.weights = []
         this.costGradientWeight = []
         this.costGradientBias = []
+        this.bias = []
         for(var outputId = 0; outputId < this.length; outputId++) {
             this.costGradientBias[outputId] = 0
             this.costGradientWeight[outputId] = []
@@ -13,6 +14,7 @@ class layer {
                 this.costGradientWeight[outputId][inputId] = 0
                 this.weights[outputId][inputId] = 1 //inputId % this.length  == outputId % this.inputLength  ? 1 : 0
             }
+            this.bias[outputId] = 0
         }
     }
     clearGradient() {
@@ -20,6 +22,8 @@ class layer {
             for(var inputId = 0; inputId < this.inputLength; inputId++) {
                 this.costGradientWeight[outputId][inputId] = 0
             }
+            this.costGradientBias[outputId] = 0
+
         }
     }
     reLu(input) {
@@ -28,7 +32,7 @@ class layer {
     Predict(input) {
         var output = []
         for(var outputId = 0; outputId < this.length; outputId++) {
-            output[outputId] = 0
+            output[outputId] = this.bias[outputId]
             for(var inputId = 0; inputId < this.inputLength; inputId++) {
                 output[outputId] += this.weights[outputId][inputId] * input[inputId]
             }
@@ -40,7 +44,7 @@ class layer {
         var output = []
         input = input
         for(var outputId = 0; outputId < this.length; outputId++) {
-            var cur = 0
+            var cur = this.bias[outputId]
             for(var inputId = 0; inputId < this.inputLength; inputId++) {
                 cur += this.weights[outputId][inputId] * input[inputId]
             }
@@ -61,6 +65,7 @@ class layer {
             for(var inputId = 0; inputId < this.inputLength; inputId++) {
                 this.weights[outputId][inputId] -= learnRate * this.costGradientWeight[outputId][inputId]
             }
+            this.bias[outputId] -= learnRate * this.costGradientBias[outputId]
         }
     }
     nodeCostDerivative(output, expectedOutput)
@@ -85,10 +90,13 @@ class layer {
     {
         for(var outputId = 0; outputId < this.length; outputId++) {
             var MaxWeight = {value:0,bad:0}
+            var MaxBias = {value:0,bad:0}
             for(var inputId = 0; inputId < this.inputLength; inputId++) {
                 var sumWeight = 0
+                var sumBias = 0
                 for(var sampleId = 0; sampleId < nodeValues.length; sampleId++) {
                     sumWeight += nodeValues[sampleId][outputId] * prediction[sampleId].input[inputId]
+                    sumBias += nodeValues[sampleId][outputId]
                 }
                 var bad = Math.abs(sumWeight) 
                 if(bad > MaxWeight.bad) {
@@ -98,9 +106,20 @@ class layer {
                         inputId
                     }
                 }
+                var badBias = Math.abs(sumBias)
+                if(badBias > MaxBias.bad) {
+                    MaxBias = {
+                        value:sumBias / nodeValues.length,
+                        badBias,
+                        inputId
+                    }
+                }
             }
             if(MaxWeight.value != 0) {
                 this.costGradientWeight[outputId][MaxWeight.inputId] = MaxWeight.value
+            }
+            if(MaxBias.value != 0) {
+                this.costGradientBias[outputId] = MaxBias.value
             }
         }
     }

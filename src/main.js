@@ -51,6 +51,10 @@ uploadElement.addEventListener('click', (e) => {
                 item.value = result[item.id]
                 localStorage.setItem(item.id, result[item.id])
             }
+            myNetwork = new network(...eval(`[${networkShapeElement.value}]`))
+            x = eval(`[${xElement.value}]`)
+            y = eval(`[${yElement.value}]`)
+            train();
         })
         // read file
         reader.readAsText(file)
@@ -110,7 +114,9 @@ function train(){
 
   stdout.innerHTML = JSON.stringify(myNetwork.layers
     .slice(1)
-    .map(layer => layer.weights.map(y=>y.map(x=>{var c = x.toFixed(2); return c == 0?0:Number(c)}))), null, 2)
+    .map(layer => 
+      [...layer.weights.map(y=>y.map(x=>{var c = x.toFixed(2); return c == 0?0:Number(c)})),
+      ...layer.bias.map(y=>{var c = y.toFixed(2); return c == 0?0:Number(c)})]), null, 2)
     .replace(/\n/g, '<br>')
     .replace(/ /g, '&nbsp;')
   
