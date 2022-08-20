@@ -84,10 +84,23 @@ class layer {
     updateGradients(prediction,nodeValues)
     {
         for(var outputId = 0; outputId < this.length; outputId++) {
+            var MaxWeight = {value:0,bad:0}
             for(var inputId = 0; inputId < this.inputLength; inputId++) {
+                var sumWeight = 0
                 for(var sampleId = 0; sampleId < nodeValues.length; sampleId++) {
-                    this.costGradientWeight[outputId][inputId] += nodeValues[sampleId][outputId] * prediction[sampleId].input[inputId]
+                    sumWeight += nodeValues[sampleId][outputId] * prediction[sampleId].input[inputId]
                 }
+                var bad = Math.abs(sumWeight) 
+                if(bad > MaxWeight.bad) {
+                    MaxWeight = {
+                        value:sumWeight / nodeValues.length,
+                        bad,
+                        inputId
+                    }
+                }
+            }
+            if(MaxWeight.value != 0) {
+                this.costGradientWeight[outputId][MaxWeight.inputId] = MaxWeight.value
             }
         }
     }
