@@ -100,8 +100,17 @@ export function renderNetwork(network)
                     var currentWeight = layer.weights[k][j]/maxWeight*255;
 
                     // make current weight between 100 and 200
-                    currentWeight = (currentWeight/4)+100;
-                    line.setAttribute("stroke", `rgb(${currentWeight},${currentWeight},${currentWeight})`);
+                    // if(currentWeight < 0)
+                    // {
+                    //     currentWeight = (currentWeight/4)+100;
+                    //     line.setAttribute("stroke", `rgb(${currentWeight},${0},${currentWeight})`);
+
+                    // }
+                    // else
+                    // {
+                        currentWeight = (currentWeight/4)+100;
+                        line.setAttribute("stroke", `rgb(${currentWeight},${currentWeight},${currentWeight})`);
+                    // }
                     line.classList.add("connection");
                     lines.appendChild(line);
                     k++

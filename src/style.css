@@ -52,7 +52,7 @@ svg{
 
 input{
   background-color: #363636;
-  width: 300px;
+  width: 500px;
   height: 100%;
   padding: 5px;
   border: 1px solid #5a5a5a;
@@ -78,8 +78,8 @@ button{
   outline: none;
   cursor: pointer;
   border: 1px dashed white;
-  width: 100px;
   border-radius: 5px;
+  padding: 5px 40px;
   transition: all 0.2s ease-in-out;
 }
 button:hover{

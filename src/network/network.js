@@ -11,7 +11,7 @@ class layer {
             this.weights[outputId] = []
             for(var inputId = 0; inputId < this.inputLength; inputId++) {
                 this.costGradientWeight[outputId][inputId] = 0
-                this.weights[outputId][inputId] = inputId % this.length  == outputId % this.inputLength  ? 1 : 0
+                this.weights[outputId][inputId] = 1 //inputId % this.length  == outputId % this.inputLength  ? 1 : 0
             }
         }
     }
@@ -151,3 +151,5 @@ export class network {
         }
     }
 }
+
+
