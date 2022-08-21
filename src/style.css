@@ -108,4 +108,5 @@ button:hover{
   top:10px;
   overflow-y: auto;
   height: 100vh;
+  width: 150px;
 }

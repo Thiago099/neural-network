@@ -60,7 +60,7 @@ class layer {
             input,
         }
     }   
-    applyCostGradient(learnRate) {
+    applyCostGradient() {
         for(var outputId = 0; outputId < this.length; outputId++) {
             for(var inputId = 0; inputId < this.inputLength; inputId++) {
                 this.weights[outputId][inputId] -= this.costGradientWeight[outputId][inputId] / (this.inputLength*this.length)
@@ -73,7 +73,7 @@ class layer {
         return 2 * (output - expectedOutput)
     }
     activationDerivative(input) {
-        return input > 0 ? 1 : 0
+        return input > 0 ? 2 : 1
     }
 
     CalculateNodeValues(prediction,expectedOutput)
@@ -82,7 +82,7 @@ class layer {
         for(var outputId = 0; outputId < this.length; outputId++) {
             const costDerivative = this.nodeCostDerivative(prediction.output[outputId].activations, expectedOutput[outputId])
             const activationDerivative = this.activationDerivative(prediction.output[outputId].nonActivations)
-            nodeValues[outputId] = costDerivative * activationDerivative
+            nodeValues[outputId] = costDerivative// * activationDerivative
         }
         return nodeValues
     }
@@ -195,8 +195,8 @@ export class network {
     {
         for(var j = 0; j < epochs; j++) {
             this.updateAllGradients(inputArray,outputArray)
-            for(var i = 1; i < this.layers.length; i++) {
-                this.layers[i].applyCostGradient(0.1)
+            for(var i = 1; i < this.layers.length; i++) {   
+                this.layers[i].applyCostGradient()
             }
             for(const layer of this.layers) {
                 layer.clearGradient()
