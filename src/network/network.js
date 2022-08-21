@@ -63,9 +63,9 @@ class layer {
     applyCostGradient(learnRate) {
         for(var outputId = 0; outputId < this.length; outputId++) {
             for(var inputId = 0; inputId < this.inputLength; inputId++) {
-                this.weights[outputId][inputId] -= learnRate * this.costGradientWeight[outputId][inputId]
+                this.weights[outputId][inputId] -= this.costGradientWeight[outputId][inputId] / (this.inputLength*this.length)
             }
-            this.bias[outputId] -= learnRate * this.costGradientBias[outputId]
+            // this.bias[outputId] -= this.costGradientBias[outputId]
         }
     }
     nodeCostDerivative(output, expectedOutput)
@@ -111,22 +111,22 @@ class layer {
                     sumWeight += nodeValues[sampleId][outputId] * prediction[sampleId].input[inputId]
                     sumBias += nodeValues[sampleId][outputId]
                 }
-                    var bad = Math.abs(sumWeight) 
-                    if(bad > MaxWeight.bad) {
-                        MaxWeight = {
-                            value:sumWeight / nodeValues.length,
-                            bad,
-                            inputId
-                        }
+                var bad = Math.abs(sumWeight) 
+                if(bad > MaxWeight.bad) {
+                    MaxWeight = {
+                        value:sumWeight / nodeValues.length,
+                        bad,
+                        inputId
                     }
-                    var badBias = Math.abs(sumBias)
-                    if(badBias > MaxBias.bad) {
-                        MaxBias = {
-                            value:sumBias / nodeValues.length,
-                            badBias,
-                            inputId
-                        }
+                }
+                var badBias = Math.abs(sumBias)
+                if(badBias > MaxBias.bad) {
+                    MaxBias = {
+                        value:sumBias / nodeValues.length,
+                        badBias,
+                        inputId
                     }
+                }
             }
             if(MaxWeight.value != 0) {
                 this.costGradientWeight[outputId][MaxWeight.inputId] = MaxWeight.value
