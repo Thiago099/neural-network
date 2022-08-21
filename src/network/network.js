@@ -12,7 +12,7 @@ class layer {
             this.weights[outputId] = []
             for(var inputId = 0; inputId < this.inputLength; inputId++) {
                 this.costGradientWeight[outputId][inputId] = 0
-                this.weights[outputId][inputId] = 1 //inputId % this.length  == outputId % this.inputLength  ? 1 : 0
+                this.weights[outputId][inputId] = inputId % this.length  == outputId % this.inputLength  ? 1 : 0 // 1  
             }
             this.bias[outputId] = 0
         }
@@ -86,6 +86,19 @@ class layer {
         }
         return nodeValues
     }
+    CalculateHiddenLayerNodeValues(prediction,oldLayer,oldNodeValues)
+    {
+        const newNodeValues = []
+        for(var newNodeIndex = 0; newNodeIndex < this.length; newNodeIndex++) {
+            var newNodeValue = 0
+            for(var oldNodeIndex = 0; oldNodeIndex < oldNodeValues.length; oldNodeIndex++) {
+                const weightDerivative = oldLayer.weights[oldNodeIndex][newNodeIndex]
+                newNodeValue += oldNodeValues[oldNodeIndex] * weightDerivative
+            }
+            newNodeValues[newNodeIndex] = newNodeValue * this.activationDerivative(prediction.output[newNodeIndex].nonActivations)
+        }
+        return newNodeValues
+    }
     updateGradients(prediction,nodeValues)
     {
         for(var outputId = 0; outputId < this.length; outputId++) {
@@ -98,22 +111,22 @@ class layer {
                     sumWeight += nodeValues[sampleId][outputId] * prediction[sampleId].input[inputId]
                     sumBias += nodeValues[sampleId][outputId]
                 }
-                var bad = Math.abs(sumWeight) 
-                if(bad > MaxWeight.bad) {
-                    MaxWeight = {
-                        value:sumWeight / nodeValues.length,
-                        bad,
-                        inputId
+                    var bad = Math.abs(sumWeight) 
+                    if(bad > MaxWeight.bad) {
+                        MaxWeight = {
+                            value:sumWeight / nodeValues.length,
+                            bad,
+                            inputId
+                        }
                     }
-                }
-                var badBias = Math.abs(sumBias)
-                if(badBias > MaxBias.bad) {
-                    MaxBias = {
-                        value:sumBias / nodeValues.length,
-                        badBias,
-                        inputId
+                    var badBias = Math.abs(sumBias)
+                    if(badBias > MaxBias.bad) {
+                        MaxBias = {
+                            value:sumBias / nodeValues.length,
+                            badBias,
+                            inputId
+                        }
                     }
-                }
             }
             if(MaxWeight.value != 0) {
                 this.costGradientWeight[outputId][MaxWeight.inputId] = MaxWeight.value
@@ -139,15 +152,21 @@ export class network {
         const prediction = []
         for(var sampleId = 0; sampleId < input.length; sampleId++)
         {
-            const currentPrediction = outputLayer.CollectData(input[sampleId])
-            nodeValues.push(outputLayer.CalculateNodeValues(currentPrediction, output[sampleId]))
-            prediction.push(currentPrediction)
+            const currentPrediction = this.Fill(input[sampleId])
+            nodeValues.push(outputLayer.CalculateNodeValues(currentPrediction[this.layers.length-2], output[sampleId]))
+            prediction.push(currentPrediction[this.layers.length -2])
         }
         outputLayer.updateGradients(prediction,nodeValues)
-
-        // var hiddenLayer = this.layers[this.layers.length-2]
-        // nodeValues = hiddenLayer.CalculateHiddenNodeValues(outputLayer,nodeValues)
-        // hiddenLayer.updateGradients(nodeValues)
+        const nextLayer = this.layers[this.layers.length-2]
+        const newNodeValues = []
+        const newPrediction = []
+        for(var sampleId = 0; sampleId < input.length; sampleId++)
+        {
+            const currentPrediction = nextLayer.CollectData(input[sampleId])
+            newNodeValues.push(nextLayer.CalculateHiddenLayerNodeValues(currentPrediction,outputLayer, nodeValues[sampleId]))
+            newPrediction.push(currentPrediction)
+        }
+        nextLayer.updateGradients(prediction,newNodeValues)
     }
 
     Predict(input) {
@@ -156,6 +175,17 @@ export class network {
             output = this.layers[i].Predict(output)
         }
         return output
+    }
+    Fill(input)
+    {
+        var result = []
+        var output = this.layers[1].CollectData(input)
+        for(var i = 2; i < this.layers.length; i++) {
+            result.push(output)
+            output = this.layers[i].CollectData(output.output.map(x=>x.activations))
+        }
+        result.push(output)
+        return result
     }
     Learn(inputArray,outputArray,epochs)
     {
