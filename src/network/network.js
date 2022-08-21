@@ -148,25 +148,29 @@ export class network {
     }
     updateAllGradients(input,output) {
         var outputLayer = this.layers[this.layers.length-1]
-        const nodeValues = []
+        var nodeValues = []
         const prediction = []
+        const currentPredictions = []
         for(var sampleId = 0; sampleId < input.length; sampleId++)
         {
-            const currentPrediction = this.Fill(input[sampleId])
-            nodeValues.push(outputLayer.CalculateNodeValues(currentPrediction[this.layers.length-2], output[sampleId]))
-            prediction.push(currentPrediction[this.layers.length -2])
+            currentPredictions[sampleId] = this.Fill(input[sampleId])
+            nodeValues.push(outputLayer.CalculateNodeValues(currentPredictions[sampleId][this.layers.length-2], output[sampleId]))
+            prediction.push(currentPredictions  [sampleId][this.layers.length -2])
         }
         outputLayer.updateGradients(prediction,nodeValues)
-        const nextLayer = this.layers[this.layers.length-2]
-        const newNodeValues = []
-        const newPrediction = []
-        for(var sampleId = 0; sampleId < input.length; sampleId++)
-        {
-            const currentPrediction = nextLayer.CollectData(input[sampleId])
-            newNodeValues.push(nextLayer.CalculateHiddenLayerNodeValues(currentPrediction,outputLayer, nodeValues[sampleId]))
-            newPrediction.push(currentPrediction)
+        for(var layerId = this.layers.length - 3; layerId >= 0; layerId--) {
+            const nextLayer = this.layers[layerId+1]
+            const newNodeValues = []
+            const newPrediction = []
+            for(var sampleId = 0; sampleId < input.length; sampleId++)
+            {
+                newNodeValues.push(nextLayer.CalculateHiddenLayerNodeValues(currentPredictions[sampleId][layerId],outputLayer, nodeValues[sampleId]))
+                newPrediction.push(currentPredictions[sampleId][layerId])
+            }
+            nextLayer.updateGradients(newPrediction ,newNodeValues)
+            nodeValues = newNodeValues
+            outputLayer = nextLayer
         }
-        nextLayer.updateGradients(prediction,newNodeValues)
     }
 
     Predict(input) {
