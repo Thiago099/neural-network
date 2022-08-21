@@ -92,12 +92,12 @@ class layer {
         for(var newNodeIndex = 0; newNodeIndex < this.length; newNodeIndex++) {
             var newNodeValue = 0
             for(var oldNodeIndex = 0; oldNodeIndex < oldNodeValues.length; oldNodeIndex++) {
-                const weightDerivative = oldLayer.weights[oldNodeIndex][newNodeIndex]
-                newNodeValue += oldNodeValues[oldNodeIndex] * weightDerivative
+                const weightDerivative = oldLayer.weights[oldNodeIndex][newNodeIndex] / 2
+                newNodeValue += oldNodeValues[oldNodeIndex] * weightDerivative 
             }
-            newNodeValues[newNodeIndex] = newNodeValue * this.activationDerivative(prediction.output[newNodeIndex].nonActivations)
+            newNodeValues[newNodeIndex] = newNodeValue * this.activationDerivative(prediction.output[newNodeIndex].nonActivations) 
         }
-        return newNodeValues
+        return newNodeValues 
     }
     updateGradients(prediction,nodeValues)
     {
@@ -132,7 +132,7 @@ class layer {
                 this.costGradientWeight[outputId][MaxWeight.inputId] = MaxWeight.value
             }
             if(MaxBias.value != 0) {
-                this.costGradientBias[outputId] = MaxBias.value
+                this.costGradientBias[outputId] = MaxBias.value * 1
             }
         }
     }
@@ -168,7 +168,7 @@ export class network {
                 newPrediction.push(currentPredictions[sampleId][layerId])
             }
             nextLayer.updateGradients(newPrediction ,newNodeValues)
-            nodeValues = newNodeValues
+            nodeValues = newNodeValues 
             outputLayer = nextLayer
         }
     }
