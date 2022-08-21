@@ -65,7 +65,7 @@ class layer {
             for(var inputId = 0; inputId < this.inputLength; inputId++) {
                 this.weights[outputId][inputId] -= this.costGradientWeight[outputId][inputId] / (this.inputLength*this.length)
             }
-            // this.bias[outputId] -= this.costGradientBias[outputId]
+            this.bias[outputId] -= this.costGradientBias[outputId] / (this.inputLength*this.length)
         }
     }
     nodeCostDerivative(output, expectedOutput)
