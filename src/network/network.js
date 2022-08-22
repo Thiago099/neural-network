@@ -164,7 +164,7 @@ export class network {
             const newPrediction = []
             for(var sampleId = 0; sampleId < input.length; sampleId++)
             {
-                newNodeValues.push(nextLayer.CalculateHiddenLayerNodeValues(currentPredictions[sampleId][layerId],outputLayer, nodeValues[sampleId], this.layers.length))
+                newNodeValues.push(nextLayer.CalculateHiddenLayerNodeValues(currentPredictions[sampleId][layerId],outputLayer, nodeValues[sampleId], this.layers.length-1))
                 newPrediction.push(currentPredictions[sampleId][layerId])
             }
             nextLayer.updateGradients(newPrediction ,newNodeValues)
