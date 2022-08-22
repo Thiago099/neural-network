@@ -92,10 +92,10 @@ class layer {
         for(var newNodeIndex = 0; newNodeIndex < this.length; newNodeIndex++) {
             var newNodeValue = 0
             for(var oldNodeIndex = 0; oldNodeIndex < oldNodeValues.length; oldNodeIndex++) {
-                const weightDerivative = oldLayer.weights[oldNodeIndex][newNodeIndex] / numberOfLayers
+                const weightDerivative = oldLayer.weights[oldNodeIndex][newNodeIndex] 
                 newNodeValue += oldNodeValues[oldNodeIndex] * weightDerivative 
             }
-            newNodeValues[newNodeIndex] = newNodeValue * this.activationDerivative(prediction.output[newNodeIndex].nonActivations) 
+            newNodeValues[newNodeIndex] = newNodeValue * this.activationDerivative(prediction.output[newNodeIndex].nonActivations) / numberOfLayers 
         }
         return newNodeValues 
     }
