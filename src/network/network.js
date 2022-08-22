@@ -86,13 +86,13 @@ class layer {
         }
         return nodeValues
     }
-    CalculateHiddenLayerNodeValues(prediction,oldLayer,oldNodeValues)
+    CalculateHiddenLayerNodeValues(prediction,oldLayer,oldNodeValues, numberOfLayers)
     {
         const newNodeValues = []
         for(var newNodeIndex = 0; newNodeIndex < this.length; newNodeIndex++) {
             var newNodeValue = 0
             for(var oldNodeIndex = 0; oldNodeIndex < oldNodeValues.length; oldNodeIndex++) {
-                const weightDerivative = oldLayer.weights[oldNodeIndex][newNodeIndex] / 2
+                const weightDerivative = oldLayer.weights[oldNodeIndex][newNodeIndex] / numberOfLayers
                 newNodeValue += oldNodeValues[oldNodeIndex] * weightDerivative 
             }
             newNodeValues[newNodeIndex] = newNodeValue * this.activationDerivative(prediction.output[newNodeIndex].nonActivations) 
@@ -164,7 +164,7 @@ export class network {
             const newPrediction = []
             for(var sampleId = 0; sampleId < input.length; sampleId++)
             {
-                newNodeValues.push(nextLayer.CalculateHiddenLayerNodeValues(currentPredictions[sampleId][layerId],outputLayer, nodeValues[sampleId]))
+                newNodeValues.push(nextLayer.CalculateHiddenLayerNodeValues(currentPredictions[sampleId][layerId],outputLayer, nodeValues[sampleId], this.layers.length))
                 newPrediction.push(currentPredictions[sampleId][layerId])
             }
             nextLayer.updateGradients(newPrediction ,newNodeValues)
