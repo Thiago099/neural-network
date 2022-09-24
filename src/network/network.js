@@ -81,7 +81,7 @@ class layer {
         var nodeValues = []
         for(var outputId = 0; outputId < this.length; outputId++) {
             const costDerivative = this.nodeCostDerivative(prediction.output[outputId].activations, expectedOutput[outputId])
-            const activationDerivative = this.activationDerivative(prediction.output[outputId].nonActivations)
+            // const activationDerivative = this.activationDerivative(prediction.output[outputId].nonActivations)
             nodeValues[outputId] = costDerivative// * activationDerivative
         }
         return nodeValues
