@@ -19,7 +19,7 @@ function model(element, defaultValue, callback)
 {
   const result = document.querySelector(element)
   fields.push(result)
-  result.value = localStorage.getItem(element) || defaultValue
+  result.value = /*localStorage.getItem(element) ||*/ defaultValue
   result.addEventListener('keydown', (e) => {
     if (e.keyCode === 13) {
       callback(result.value)
