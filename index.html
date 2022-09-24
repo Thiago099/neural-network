@@ -2,16 +2,29 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/shape-mnist/assets/favicon.17e50649.svg" />
+    <link rel="icon" type="image/svg+xml" href="/neural-network/assets/favicon.17e50649.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite App</title>
-    <script type="module" crossorigin src="/shape-mnist/assets/index.72951a8d.js"></script>
-    <link rel="stylesheet" href="/shape-mnist/assets/index.39dede0c.css">
+    <script type="module" crossorigin src="/neural-network/assets/index.b5ef013c.js"></script>
+    <link rel="stylesheet" href="/neural-network/assets/index.fb5ad8ab.css">
   </head>
   <body>
     <div id="form">
-      <input type="text" id="input">
+      <label for="network-shape">Shape:</label>
+      <input type="text" id="network-shape" value="2,2">
+      <label for="x">Training input:</label>
+      <input type="text" id="x" value="[2,1], [1,2]">
+      <label for="y">Training output:</label>
+      <input type="text" id="y" value="[1,2], [2,1]">  
+      <label for="z">Input:</label>
+      <input type="text" id="input" value="2,10">
+      <label for="output">output</label>
       <input type="text" id="output" disabled>
+      <div>
+        <button id="upload">Upload</button>
+        <button id="download">Download</button>
+      </div>
+      Enter to confirm
       <!-- <button id="train">Train</button> -->
     </div>
     <div id="stdout"></div>
